@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [text]="getBackButtonText()" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title> Temas </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" *ngIf="temas">
+  <ion-card>
+    <ion-card-header class="comment-author">
+      Ordenar por:
+    </ion-card-header>
+    <ion-card-content>
+      <div class="icon-row">
+        <ion-button color="dark" fill="outline" (click)="sortAZ()">A-Z</ion-button>
+        <ion-button color="dark" fill="outline" (click)="sortZA()">Z-A</ion-button>
+        <!-- <ion-button color="dark" fill="outline" (click)="sortIdAsc()">ID Asc</ion-button>
+        <ion-button color="dark" fill="outline" (click)="sortIdDesc()">ID Desc</ion-button> -->
+      </div>
+    </ion-card-content>
+
+    <ion-list>
+      <ion-reorder-group [disabled]="false" (ionItemReorder)="reorder($event)">
+        <!-- NOMBRE Y DESCRIPCION DEL TEMA-->
+        <ion-item *ngFor="let tema of temas">
+          <ion-label [routerLink]="'/theme-edit/'+tema.id">{{tema.id}} - {{tema.name}} -
+            {{tema.description}}</ion-label>
+          <!-- Visualizar -->
+          <ion-icon style="font-size: 30px;" name="eye-outline" (click)="cambiarPantalla(tema.id)"></ion-icon>
+          <!-- EDITAR TEMA-->
+          <ion-icon style="font-size: 30px;" name="create" color="warning" [routerLink]="'/theme-edit/'+tema.id"></ion-icon>
+          <!-- ELIMINAR TEMA-->
+          <ion-icon style="font-size: 30px;" name="trash" color="danger" (click)="confirmDelete(tema.id)"> </ion-icon>
+
+          <ion-reorder style="margin-left: 0;" slot="end"></ion-reorder>
+        </ion-item>
+      </ion-reorder-group>
+
+    </ion-list>
+    <div class="ion-text-center" style="padding-bottom: 5%;">
+      <ion-button (click)="saveOrder()" shape="round">
+        Guardar
+        <ion-icon slot="end" name="save-outline"></ion-icon>
+           </ion-button>
+    </div>
+
+  </ion-card>
+
+  <!-- AGREGAR TEMA-->
+  <ion-fab style="padding-bottom: 100px;" slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button color="success" [routerLink]="'/theme-edit/0'">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,93 @@
+.comment {
+  margin: 10px 0;
+}
+
+.comment-info {
+  padding: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom: 1px solid #ccc;
+  width: 25%;
+  height: 80px;
+}
+
+.comment-text {
+  border: 1px solid #ccc;
+  border-top: none;
+  padding: 10px;
+  padding-top: 15px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  width: 75%;
+  height: 80px;
+}
+
+.comment-date {
+  position: absolute;
+  top: 0;
+  left: 90px;
+  font-size: 12px;
+}
+
+.icon-delete {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  font-size: 30px;
+}
+
+.icon-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ion-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  /* Ajusta el espaciado entre los botones si es necesario */
+}
+
+ion-button:last-child {
+  margin-right: 0;
+  /* Elimina el margen derecho del último botón */
+}
+
+ion-button {
+  padding: 0;
+  margin: 0;
+}
+
+
+.modal-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.comment-author-top {
+  font-weight: bold;
+  margin-top: 30px;
+  font-size: 20px;
+  color: black;
+}
+
+.button-group {
+  display: flex;
+  align-items: flex-end;
+}
+
+.scrollable-comments {
+  max-height: 520px;
+  overflow-y: auto;
+}

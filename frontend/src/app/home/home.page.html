@@ -1,0 +1,108 @@
+<ion-router-outlet></ion-router-outlet>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Study App</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarSesion()">
+        Cerrar Sesión
+        <ion-icon slot="end" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+  <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+
+<ion-content [fullscreen]="true" *ngIf="temas">
+  <!-- Botones de Navegacion -->
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button [routerLink]="'/topic-list'">
+        <ion-icon name="document-text-outline"></ion-icon>
+        Topicos
+      </ion-tab-button>
+      <ion-tab-button [routerLink]="'/theme-list'">
+        <ion-icon name="document-text-outline"></ion-icon>
+        Temas
+      </ion-tab-button>
+      <ion-tab-button [routerLink]="'/user-list'">
+        <ion-icon name="person-circle-outline"></ion-icon>
+        Usuarios
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+
+  <ion-card>
+    <ion-accordion-group>
+      <!-- Impresion de tema -->
+      <ion-accordion *ngFor="let tema of temas">
+        <ion-item slot="header" color="light">
+          <ion-label>{{tema.id}} - {{tema.name}} - {{tema.description}}</ion-label>
+        </ion-item>
+        <!-- Impresion de propiedades del tema -->
+        <div *ngFor="let tema_propiedad of temas_propiedades" slot="content">
+          <label *ngIf="tema_propiedad.theme_id===tema.id" class="ion-padding">
+            {{tema_propiedad.theme_id}} - {{tema_propiedad.property_name}}
+          </label>
+        </div>
+
+        <!-- Boton para agregar propiedad -->
+        <div class="ion-padding" slot="content">
+          <ion-button fill="outline" (click)="guardarTema(tema)">Propiedad<ion-icon slot="end"
+              name="add-outline"></ion-icon>
+          </ion-button>
+
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ion-card>
+</ion-content>
+
+<!-- Compartir Modal -->
+<ion-modal [isOpen]="isOpenModal">
+  <ng-template>
+    <ion-content class="modal-content">
+      <ion-card>
+        <ion-card-header>
+          <ion-label class="comment-author" position="floating"><strong>{{ temaSelecionado.name }}</strong></ion-label>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>{{ temaSelecionado.description }}</p>
+          <p>{{ temaSelecionado.keywords }}</p>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <div class="header-content">
+            <span class="comment-author"><strong>Escriba la propiedad:</strong></span>
+          </div>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item>
+            <ion-input label-placement="stacked" placeholder="Ingrese la descripción" [(ngModel)]="descripcion">
+            </ion-input>
+          </ion-item></ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <div class="icon-row">
+            <ion-button (click)="cerrarAbrirModal()">
+              Cerrar
+              <ion-icon slot="end" name="close-outline"></ion-icon>
+            </ion-button>
+            <ion-button style="margin-left: 5px;" (click)="guardarPropiedad()">
+              Ok
+              <ion-icon slot="end" name="checkmark-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-header>
+      </ion-card>
+
+    </ion-content>
+  </ng-template>
+</ion-modal>

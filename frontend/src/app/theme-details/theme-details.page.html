@@ -1,0 +1,92 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [text]="getBackButtonText()" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title> Themes</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true">
+  <ion-card *ngIf="themesProperties">
+    <!-- aca va ael titulo -->
+    <ion-card-header>
+      Propiedades del Tema
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <!-- Lista de propiedades iterada a través de *ngFor -->
+        <ion-item *ngFor="let properties of themesProperties">
+          <div>
+            <!-- Información del autor del comentario y fecha de creación -->
+            <span>  {{ properties.property_value }} - {{ properties.property_name }} </span>
+          </div>
+
+          <!-- con el buttons guardamos ambos botones y mandamos el final con end -->
+          <ion-buttons slot="end">
+            <!-- Botón de editar -->
+            <ion-button color="warning" (click)="abrirCerrarModal(properties)">
+              <ion-icon style="font-size: 25px;" slot="icon-only" name="create"></ion-icon>
+            </ion-button>
+            <!-- Botón de eliminar -->
+            <ion-button color="danger" (click)="confirmDeleteProperties(properties.id,properties.theme_id)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- boton para agregar -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 30px;">
+    <ion-fab-button color="success" (click)="abrirModalThemesProperties()"> <!--abrimos el modal -->
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<!-- Modal para agregar propiedades a los temas -->
+<ion-modal [isOpen]="isModalThemesProperties">
+  <ng-template>
+    <ion-content class="modal-content">
+      <ion-card>
+        <ion-card-header>
+          <!-- Encabezado del modal para agregar una propiedad -->
+          <ion-label class="comment-author" position="floating">{{titulo}} Propiedad</ion-label>
+        </ion-card-header>
+        <ion-card-content>
+          <!-- Formulario para agregar nombre y valor de la propiedad -->
+          <ion-item>
+            <ion-label position="floating">Nombre de la propiedad</ion-label>
+            <ion-input [(ngModel)]="newThemeProperty.propertyName" type="text"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Valor de la propiedad</ion-label>
+            <ion-input [(ngModel)]="newThemeProperty.propertyValue" type="text"></ion-input>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <!-- Botones para cerrar el modal o agregar la propiedad -->
+          <div class="icon-row">
+            <ion-button (click)="cerrarModalThemesProperties()">
+              <ion-icon name="close-outline"></ion-icon>
+              Cerrar
+            </ion-button>
+            <ion-button style="margin-left: 5px;" (click)="guardarThemesProperties(titulo)">
+              <ion-icon name="add-outline"></ion-icon>
+              Guardar
+            </ion-button>
+          </div>
+        </ion-card-header>
+      </ion-card>
+
+    </ion-content>
+  </ng-template>
+</ion-modal>

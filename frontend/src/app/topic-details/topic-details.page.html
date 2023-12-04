@@ -1,0 +1,166 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [text]="getBackButtonText()" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalles del Tópico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">topic-details</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-card *ngIf="topic">
+    <ion-card-header>
+      <div class="header-content">
+        <span class="comment-author-top">{{topic.id}} - {{ topic.name }}</span>
+        <div class="button-group">
+          <ion-button color="transparent" [routerLink]="'/topic-edit/' + topic.id" style="--box-shadow: none;">
+            <ion-icon slot="icon-only" name="create" style="font-size: 30px; color: gray;"></ion-icon>
+          </ion-button>
+          <!-- Botón de like -->
+          <ion-button color="transparent" (click)="likeTopic(topic.id)" style="--box-shadow: none;">
+            <ion-icon slot="icon-only" [ngStyle]="{'color': isLiked ? 'red' : 'gray'}" name="heart"
+              style="font-size: 30px;"></ion-icon>
+          </ion-button>
+          <ion-button color="transparent" (click)="dislikeTopic()" style="--box-shadow: none;">
+            <ion-icon slot="icon-only" name="heart-dislike" style="font-size: 30px; color: gray;"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Color: <span [ngStyle]="{'color': topic.color}">{{ topic.color }}</span></p>
+      <p>Fecha de Creación: {{ formatDate(topic.create_date) }}</p>
+      <div *ngFor="let link of links; trackBy: trackByFn; let i = index">
+        <ion-button (click)="openLink(links[i])" fill="clear">Ver Material {{i + 1}}</ion-button>
+        <!-- <a href="{{links[i]}}">Ver Material {{i + 1}}</a> -->
+      </div>
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-card *ngIf="topic">
+    <ion-card-header class="comment-author" style="padding-bottom: 0;">{{Comentarios}}</ion-card-header>
+    <ion-card-content>
+      <ion-list class="scrollable-comments">
+        <ion-item class="comment" *ngFor="let comentario of topicoComentarios">
+          <div class="comment-info">
+            <span class="comment-author">{{ comentario.name }} {{ comentario.last_name }}</span>
+          </div>
+          <div class="comment-text">
+            {{ comentario.text }}
+            <span class="comment-date">{{ formatDate(comentario.created_at) }}</span>
+            <ion-icon class="icon-delete" *ngIf="idUsuarioActual === comentario.user_id" color="danger"
+              (click)="confirmDelete(comentario.id, topic.id)" slot="icon-only" name="trash"></ion-icon>
+          </div>
+
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <div class="icon-row">
+        <ion-button (click)="compartir(topic)">
+          <ion-icon name="share-social-outline"></ion-icon>
+        </ion-button>
+        <ion-button style="margin-left: 5px;" (click)="abrirCerrarModal()">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card-header>
+  </ion-card>
+
+</ion-content>
+
+<!-- Comentarios Modal -->
+<ion-modal [isOpen]="isModal">
+  <ng-template>
+    <ion-content class="modal-content">
+      <ion-card>
+        <ion-card-header>
+          <ion-label class="comment-author" position="floating">Tu comentario</ion-label>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-textarea [(ngModel)]="newComentario" rows="4" placeholder="Escribe tu comentario aquí"></ion-textarea>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <div class="icon-row">
+            <ion-button (click)="abrirCerrarModal()">
+              Cerrar
+              <ion-icon slot="end" name="close-outline"></ion-icon>
+            </ion-button>
+            <ion-button style="margin-left: 5px;" (click)="guardarComentario()">
+              Agregar
+              <ion-icon slot="end" name="add-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-header>
+      </ion-card>
+
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Compartir Modal -->
+<ion-modal [isOpen]="mostrarSelectUsuarios">
+  <ng-template>
+    <ion-content class="modal-content">
+      <ion-card>
+        <ion-card-header>
+          <ion-label class="comment-author" position="floating">Compartir con:</ion-label>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-item>
+            <ion-select #selectUsuarios multiple="true" cancelText="Cancelar" okText="Aceptar"
+              [(ngModel)]="usuariosSeleccionados" placeholder="Selecione usuarios">
+              <ion-select-option *ngFor="let usuario of usuariosFiltrados" [value]="usuario.id">
+                {{ usuario.name }} {{ usuario.last_name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngIf="topic">
+        <ion-card-header>
+          <div class="header-content">
+            <span class="comment-author">Tipo a Compartir</span>
+          </div>
+        </ion-card-header>
+        <ion-card-content>
+          <p>{{topic.name}}</p>
+          <p>Color: <input type="color" [(ngModel)]="topic.color" /></p>
+          <p>Fecha de Creación: {{ formatDate(topic.create_date) }}</p>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <div class="icon-row">
+            <ion-button (click)="abrirCerrarModalCompartir()">
+              Cerrar
+              <ion-icon slot="end" name="close-outline"></ion-icon>
+            </ion-button>
+            <ion-button style="margin-left: 5px;" (click)="grabarCompartir()">
+              Ok
+              <ion-icon slot="end" name="checkmark-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-header>
+      </ion-card>
+
+    </ion-content>
+  </ng-template>
+</ion-modal>
